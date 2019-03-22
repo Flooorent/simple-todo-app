@@ -4,26 +4,24 @@ const { collection: mongoCollection, url: dbUrl, name: dbName } = require('../co
 const client = new MongoClient(dbUrl)
 
 
-function insertTodo(collection, doc, cb) {
-    collection.insertOne(doc, cb(err, result))
-}
-
-
 function getAllTodos(req, res, next) {
-    /*
-    MongoClient.connect(function(err) {
+    client.connect(function(err) {
         if (err) {
             return next(err)
         }
 
-        console.log('connected to the mongo server')
+        console.log('Connected to the mongo server')
         const db = client.db(dbName)
+        const collection = db.collection(mongoCollection)
 
+        collection.find({}).toArray(function(err, docs) {
+            if (err) {
+                return next(err)
+            }
+
+            res.json({ docs })
+        })
     })
-    */
-
-    // TODO: send back all todos 
-    res.json({ message: 'got back all todos' })
 }
 
 function createTodo(req, res, next) {
@@ -43,21 +41,35 @@ function createTodo(req, res, next) {
                 console.log(message)
                 res.json({ message })
             } else {
-                // TODO: send back all todos
-                //getAllTodos(req, res, next)
-                res.json({message: `created todo: ${JSON.stringify(doc)}`})
+                return getAllTodos(req, res, next)
             }
         })
     })
-    
-    // TODO: create todo and send back associated data
-    //res.json({ message: 'created todo'})
 }
 
 
+// TODO: fix, ça marche pas
 function deleteTodo(req, res, next) {
-    // TODO: delete todo
-    res.json({ message: `todo deleted: ${req.params.todo_id}`})
+    client.connect(function(err) {
+        if (err) {
+            return next(err)
+        }
+
+        console.log('Connected to the mongo server')
+        const db = client.db(dbName)
+        const collection = db.collection(mongoCollection)
+
+        const todoId = req.params.todo_id
+
+        collection.deleteOne({ _id: todoId }, function(err, result) {
+            if (err) {
+                return next(err)
+            } else {
+                console.log(`Removed todo ${todoId}`)
+                return getAllTodos(req, res, next)
+            }
+        })
+    })
 }
 
 module.exports = {
