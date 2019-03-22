@@ -1,4 +1,5 @@
-const MongoClient = require('mongodb').MongoClient
+const mongodb = require('mongodb')
+const MongoClient = mongodb.MongoClient
 const { collection: mongoCollection, url: dbUrl, name: dbName } = require('../config/mongo')
 
 const client = new MongoClient(dbUrl)
@@ -48,7 +49,6 @@ function createTodo(req, res, next) {
 }
 
 
-// TODO: fix, ça marche pas
 function deleteTodo(req, res, next) {
     client.connect(function(err) {
         if (err) {
@@ -61,7 +61,7 @@ function deleteTodo(req, res, next) {
 
         const todoId = req.params.todo_id
 
-        collection.deleteOne({ _id: todoId }, function(err, result) {
+        collection.deleteOne({ _id: new mongodb.ObjectID(todoId) }, function(err, result) {
             if (err) {
                 return next(err)
             }
