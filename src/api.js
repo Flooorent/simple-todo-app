@@ -39,10 +39,10 @@ function createTodo(req, res, next) {
             if (err) {
                 const message = `Couldn't insert doc '${doc}' in collection ${collection}: ${err}`
                 console.log(message)
-                res.json({ message })
-            } else {
-                return getAllTodos(req, res, next)
+                return res.json({ message })
             }
+
+            return getAllTodos(req, res, next)
         })
     })
 }
@@ -64,10 +64,10 @@ function deleteTodo(req, res, next) {
         collection.deleteOne({ _id: todoId }, function(err, result) {
             if (err) {
                 return next(err)
-            } else {
-                console.log(`Removed todo ${todoId}`)
-                return getAllTodos(req, res, next)
             }
+
+            console.log(`Removed todo ${todoId}`)
+            return getAllTodos(req, res, next)
         })
     })
 }
