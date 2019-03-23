@@ -15,12 +15,12 @@ function getAllTodos(req, res, next) {
         const db = client.db(dbName)
         const collection = db.collection(mongoCollection)
 
-        collection.find({}).toArray(function(err, docs) {
+        collection.find({}).toArray(function(err, todos) {
             if (err) {
                 return next(err)
             }
 
-            res.json({ docs })
+            res.json(todos)
         })
     })
 }
