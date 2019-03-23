@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "devstart": "DEBUG=simple-todo-app:* nodemon server.js",
-    "run-mongo": "mongod --dbpath ./data/db"
+    "mongo": "mongod --dbpath ./data/db"
   },
   "repository": {
     "type": "git",
